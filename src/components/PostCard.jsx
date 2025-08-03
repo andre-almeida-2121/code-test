@@ -11,17 +11,17 @@ const PostCard = ({ post, currentUser, onEdit, onDelete }) => {
         {isOwner && (
           <div className="post-actions">
             <button onClick={() => onEdit(post)} className="edit-btn">
-              ✎
+              Edit
             </button>
             <button onClick={() => onDelete(post)} className="delete-btn">
-              🗑
+              Delete
             </button>
           </div>
         )}
       </div>
       <div className="post-meta">
         <span className="username">@{post.username}</span>
-        <span className="timestamp">{post.createdAt}</span>
+        <span className="timestamp">{post.created_datetime}</span>
       </div>
       <p className="post-content">{post.content}</p>
     </div>
