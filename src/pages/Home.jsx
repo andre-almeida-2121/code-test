@@ -2,16 +2,28 @@ import React, { useState } from "react";
 import PostCard from "../components/PostCard";
 import DeleteAlert from "../components/DeleteAlert";
 import EditPostModal from "../components/EditPostModal";
+import { useQuery } from "@tanstack/react-query";
 import "../style.css";
+
+const fetchPosts = async () => {
+  const response = await fetch("https://dev.codeleap.co.uk/careers/");
+  if (!response.ok) throw new Error("Failed to fetch posts");
+  const data = await response.json();
+  return data.results;
+};
 
 const Home = ({ username }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [posts, setPosts] = useState([]);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [postToDelete, setPostToDelete] = useState(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [postToEdit, setPostToEdit] = useState(null);
+
+  const { data: posts = [], refetch } = useQuery({
+    queryKey: ["posts"],
+    queryFn: fetchPosts,
+  });
 
   const handleCreatePost = () => {
     if (!title || !content) return;
