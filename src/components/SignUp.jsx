@@ -2,15 +2,15 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../style.css";
 
-function SignUp() {
-  const [username, setUsername] = useState("");
+const SignUp = ({ setUsername }) => {
+  const [inputValue, setInputValue] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!username.trim()) return;
+    if (!inputValue.trim()) return;
 
-    localStorage.setItem("username", username.trim());
+    setUsername(inputValue); // Username value will be stored
     navigate("/home");
   };
 
@@ -22,16 +22,16 @@ function SignUp() {
         <input
           type="text"
           id="username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
           placeholder="Your username"
         />
-        <button type="submit" disabled={!username.trim()}>
+        <button type="submit" disabled={!inputValue.trim()}>
           Enter
         </button>
       </form>
     </main>
   );
-}
+};
 
 export default SignUp;

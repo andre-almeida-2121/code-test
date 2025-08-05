@@ -5,14 +5,14 @@ import EditPostModal from "../components/EditPostModal";
 // import { useQuery } from "@tanstack/react-query";
 import "../style.css";
 
-/* const fetchPosts = async () => {
-  const response = await fetch("https://dev.codeleap.co.uk/careers/");
-  if (!response.ok) throw new Error("Failed to fetch posts");
-  const data = await response.json();
-  console.log("dados esperados", data);
-  return data.results;
-};
-*/
+// const fetchPosts = async () => {
+//   const response = await fetch("https://dev.codeleap.co.uk/careers/");
+//   if (!response.ok) throw new Error("Failed to fetch posts");
+//   const data = await response.json();
+//   console.log("dados esperados", data);
+//   return data.results;
+// };
+
 const Home = ({ username }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -22,114 +22,152 @@ const Home = ({ username }) => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [postToEdit, setPostToEdit] = useState(null);
 
-  const handleCreatePost = () => {
-    if (!title || !content) return;
-
-    const newPost = {
-      id: Date.now(),
-      title,
-      content,
-      username,
-      created_at: new Date().toLocaleString(),
-    };
-
-    setPosts([newPost, ...posts]);
-    setTitle("");
-    setContent("");
-  };
-
-  /*
-  const { data: posts = [], refetch } = useQuery({
-    queryKey: ["posts"],
-    queryFn: fetchPosts,
-  });
+  console.log("User logged in", username);
 
   const handleCreatePost = async () => {
     if (!title || !content) return;
 
     try {
-      const response = await fetch("https://dev.codeleap.co.uk/careers/", {
+      const response = await fetch("http://localhost:3001/posts", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           username,
           title,
           content,
+          created_datetime: new Date().toISOString(),
         }),
       });
 
-      const data = await response.json();
-      console.log("Resposta do backend ao criar post:", data);
+      const newPost = await response.json();
 
-      const fetchResponse = await fetch("https://dev.codeleap.co.uk/careers/");
-      const postsAfterCreate = await fetchResponse.json();
-      console.log("Posts disponíveis depois do post:", postsAfterCreate);
-
+      setPosts([newPost, ...posts]); // Adiciona o novo post retornado
       setTitle("");
       setContent("");
-
-      refetch(); // Update data
-    } catch (error) {
-      console.error("Error creating post:", error);
+    } catch (err) {
+      console.error("Error create post:", err);
     }
-  }; */
+  };
+  //
+  // const { data: posts = [], refetch } = useQuery({
+  //   queryKey: ["posts"],
+  //   queryFn: fetchPosts,
+  // });
+
+  // const handleCreatePost = async () => {
+  //   if (!title || !content) return;
+
+  //   try {
+  //     const response = await fetch("https://dev.codeleap.co.uk/careers/", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         username,
+  //         title,
+  //         content,
+  //       }),
+  //     });
+
+  //     const data = await response.json();
+  //     console.log("Resposta do backend ao criar post:", data);
+
+  //     const fetchResponse = await fetch("https://dev.codeleap.co.uk/careers/");
+  //     const postsAfterCreate = await fetchResponse.json();
+  //     console.log("Posts disponíveis depois do post:", postsAfterCreate);
+
+  //     setTitle("");
+  //     setContent("");
+
+  //     refetch(); // Update data
+  //   } catch (error) {
+  //     console.error("Error creating post:", error);
+  //   }
+  // };
 
   const openDeleteAlert = (post) => {
     setPostToDelete(post);
     setIsDeleteOpen(true);
   };
 
-  const handleConfirmDelete = () => {
-    setPosts(posts.filter((p) => p.id !== postToDelete.id));
-    setIsDeleteOpen(false);
-  };
-
-  /*
   const handleConfirmDelete = async () => {
     if (!postToDelete) return;
+
     try {
-      await fetch(`https://dev.codeleap.co.uk/careers/${postToDelete.id}/`, {
+      await fetch(`http://localhost:3001/posts/${postToDelete.id}`, {
         method: "DELETE",
       });
+
+      setPosts(posts.filter((p) => p.id !== postToDelete.id));
       setIsDeleteOpen(false);
-      setPostToDelete(null);
-      refetch();
-    } catch (error) {
-      console.error("Error deleting post:", error);
+    } catch (err) {
+      console.error("Erro delete post:", err);
     }
-  }; */
+  };
+
+  // const handleConfirmDelete = async () => {
+  //   if (!postToDelete) return;
+  //   try {
+  //     await fetch(`https://dev.codeleap.co.uk/careers/${postToDelete.id}/`, {
+  //       method: "DELETE",
+  //     });
+  //     setIsDeleteOpen(false);
+  //     setPostToDelete(null);
+  //     refetch();
+  //   } catch (error) {
+  //     console.error("Error deleting post:", error);
+  //   }
+  // };
 
   const openEditModal = (post) => {
     setPostToEdit(post);
     setIsEditOpen(true);
   };
 
-  const handleSaveEdit = (updatedPost) => {
-    setPosts(posts.map((p) => (p.id === updatedPost.id ? updatedPost : p)));
-  };
-
-  /*
   const handleSaveEdit = async (updatedPost) => {
     try {
-      await fetch(`https://dev.codeleap.co.uk/careers/${updatedPost.id}/`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title: updatedPost.title,
-          content: updatedPost.content,
-        }),
-      });
-      setIsEditOpen(false);
-      setPostToEdit(null);
-      refetch();
-    } catch (error) {
-      console.error("Error editing post:", error);
+      const response = await fetch(
+        `http://localhost:3001/posts/${updatedPost.id}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: updatedPost.title,
+            content: updatedPost.content,
+          }),
+        }
+      );
+
+      const patchedPost = await response.json();
+
+      setPosts(
+        posts.map((post) => (post.id === patchedPost.id ? patchedPost : post))
+      );
+    } catch (err) {
+      console.error("Error save post:", err);
     }
-  }; */
+  };
+
+  // const handleSaveEdit = async (updatedPost) => {
+  //   try {
+  //     await fetch(`https://dev.codeleap.co.uk/careers/${updatedPost.id}/`, {
+  //       method: "PATCH",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         title: updatedPost.title,
+  //         content: updatedPost.content,
+  //       }),
+  //     });
+  //     setIsEditOpen(false);
+  //     setPostToEdit(null);
+  //     refetch();
+  //   } catch (error) {
+  //     console.error("Error editing post:", error);
+  //   }
+  // };
 
   return (
     <div className="home-container">
