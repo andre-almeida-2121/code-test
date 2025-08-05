@@ -2,28 +2,25 @@ import React, { useState } from "react";
 import PostCard from "../components/PostCard";
 import DeleteAlert from "../components/DeleteAlert";
 import EditPostModal from "../components/EditPostModal";
-import { useQuery } from "@tanstack/react-query";
+// import { useQuery } from "@tanstack/react-query";
 import "../style.css";
 
-const fetchPosts = async () => {
+/* const fetchPosts = async () => {
   const response = await fetch("https://dev.codeleap.co.uk/careers/");
   if (!response.ok) throw new Error("Failed to fetch posts");
   const data = await response.json();
+  console.log("dados esperados", data);
   return data.results;
 };
-
+*/
 const Home = ({ username }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [posts, setPosts] = useState([]);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [postToDelete, setPostToDelete] = useState(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [postToEdit, setPostToEdit] = useState(null);
-
-  const { data: posts = [], refetch } = useQuery({
-    queryKey: ["posts"],
-    queryFn: fetchPosts,
-  });
 
   const handleCreatePost = () => {
     if (!title || !content) return;
@@ -33,13 +30,51 @@ const Home = ({ username }) => {
       title,
       content,
       username,
-      created_datetime: new Date().toISOString(),
+      created_at: new Date().toLocaleString(),
     };
 
     setPosts([newPost, ...posts]);
     setTitle("");
     setContent("");
   };
+
+  /*
+  const { data: posts = [], refetch } = useQuery({
+    queryKey: ["posts"],
+    queryFn: fetchPosts,
+  });
+
+  const handleCreatePost = async () => {
+    if (!title || !content) return;
+
+    try {
+      const response = await fetch("https://dev.codeleap.co.uk/careers/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          title,
+          content,
+        }),
+      });
+
+      const data = await response.json();
+      console.log("Resposta do backend ao criar post:", data);
+
+      const fetchResponse = await fetch("https://dev.codeleap.co.uk/careers/");
+      const postsAfterCreate = await fetchResponse.json();
+      console.log("Posts disponíveis depois do post:", postsAfterCreate);
+
+      setTitle("");
+      setContent("");
+
+      refetch(); // Update data
+    } catch (error) {
+      console.error("Error creating post:", error);
+    }
+  }; */
 
   const openDeleteAlert = (post) => {
     setPostToDelete(post);
@@ -51,6 +86,21 @@ const Home = ({ username }) => {
     setIsDeleteOpen(false);
   };
 
+  /*
+  const handleConfirmDelete = async () => {
+    if (!postToDelete) return;
+    try {
+      await fetch(`https://dev.codeleap.co.uk/careers/${postToDelete.id}/`, {
+        method: "DELETE",
+      });
+      setIsDeleteOpen(false);
+      setPostToDelete(null);
+      refetch();
+    } catch (error) {
+      console.error("Error deleting post:", error);
+    }
+  }; */
+
   const openEditModal = (post) => {
     setPostToEdit(post);
     setIsEditOpen(true);
@@ -59,6 +109,27 @@ const Home = ({ username }) => {
   const handleSaveEdit = (updatedPost) => {
     setPosts(posts.map((p) => (p.id === updatedPost.id ? updatedPost : p)));
   };
+
+  /*
+  const handleSaveEdit = async (updatedPost) => {
+    try {
+      await fetch(`https://dev.codeleap.co.uk/careers/${updatedPost.id}/`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: updatedPost.title,
+          content: updatedPost.content,
+        }),
+      });
+      setIsEditOpen(false);
+      setPostToEdit(null);
+      refetch();
+    } catch (error) {
+      console.error("Error editing post:", error);
+    }
+  }; */
 
   return (
     <div className="home-container">
@@ -110,9 +181,9 @@ const Home = ({ username }) => {
           <PostCard
             key={post.id}
             post={post}
-            loggedUser={username}
-            onDelete={() => openDeleteAlert(post)}
-            onEdit={() => openEditModal(post)}
+            currentUser={username}
+            onDelete={openDeleteAlert}
+            onEdit={openEditModal}
           />
         ))}
       </section>
