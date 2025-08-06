@@ -24,10 +24,10 @@ const SignUp = ({ setUsername }) => {
           id="username"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
-          placeholder="Your username"
+          placeholder="John Doe"
         />
         <button type="submit" disabled={!inputValue.trim()}>
-          Enter
+          ENTER
         </button>
       </form>
     </main>

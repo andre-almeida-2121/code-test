@@ -174,57 +174,58 @@ const Home = ({ username }) => {
       <header className="header">
         <h1>CodeLeap Network</h1>
       </header>
-
-      <section className="create-post">
-        <h2>What’s on your mind?</h2>
-        <label>Title</label>
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="Hello world"
-        />
-
-        <label>Content</label>
-        <textarea
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="Content here"
-        />
-
-        <button
-          onClick={handleCreatePost}
-          disabled={!title || !content}
-          className={!title || !content ? "disabled" : ""}
-        >
-          Create
-        </button>
-      </section>
-
-      <DeleteAlert
-        isOpen={isDeleteOpen}
-        onClose={() => setIsDeleteOpen(false)}
-        onConfirm={handleConfirmDelete}
-      />
-
-      <EditPostModal
-        isOpen={isEditOpen}
-        post={postToEdit}
-        onClose={() => setIsEditOpen(false)}
-        onSave={handleSaveEdit}
-      />
-
-      <section className="post-list">
-        {posts.map((post) => (
-          <PostCard
-            key={post.id}
-            post={post}
-            currentUser={username}
-            onDelete={openDeleteAlert}
-            onEdit={openEditModal}
+      <div className="home-body">
+        <section className="create-post">
+          <h2>What’s on your mind?</h2>
+          <label>Title</label>
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Hello world"
           />
-        ))}
-      </section>
+
+          <label>Content</label>
+          <textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder="Content here"
+          />
+
+          <button
+            onClick={handleCreatePost}
+            disabled={!title || !content}
+            className={!title || !content ? "disabled" : ""}
+          >
+            Create
+          </button>
+        </section>
+
+        <DeleteAlert
+          isOpen={isDeleteOpen}
+          onClose={() => setIsDeleteOpen(false)}
+          onConfirm={handleConfirmDelete}
+        />
+
+        <EditPostModal
+          isOpen={isEditOpen}
+          post={postToEdit}
+          onClose={() => setIsEditOpen(false)}
+          onSave={handleSaveEdit}
+        />
+
+        <section className="post-list">
+          {posts.map((post) => (
+            <PostCard
+              key={post.id}
+              post={post}
+              currentUser={username}
+              onDelete={openDeleteAlert}
+              onEdit={openEditModal}
+            />
+          ))}
+        </section>
+      </div>
     </div>
   );
 };

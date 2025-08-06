@@ -13,6 +13,20 @@
       "content": "This is the content of the second post.",
       "author": "Jane Smith",
       "date": "2023-10-02"
+    },
+    {
+      "id": "c5a0",
+      "username": "andre",
+      "title": "Content here",
+      "content": "Title",
+      "created_datetime": "2025-08-06T03:32:11.263Z"
+    },
+    {
+      "id": "921b",
+      "username": "andre",
+      "title": "asddsadsa",
+      "content": "asdasdsad",
+      "created_datetime": "2025-08-06T03:32:23.918Z"
     }
   ]
 }
