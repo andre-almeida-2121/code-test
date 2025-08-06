@@ -30,12 +30,14 @@ const EditPostModal = ({ isOpen, post, onClose, onSave }) => {
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          placeholder="Hello world"
         />
 
         <label>Content</label>
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
+          placeholder="Content here"
         />
 
         <div className="edit-actions">
