@@ -37,11 +37,11 @@ The project includes:
 
 You can access the live application through the link below:
 
-- **[View Code Test on Vercel](link)**
+- **[View Code Test on Vercel](https://code-test-iota-wheat.vercel.app/)**
 
   or
 
-- **[View the Code Test repository](link)**
+- **[View the Code Test repository](https://github.com/andre-almeida-2121/code-test)**
 
 ## Pre Requirements
 
