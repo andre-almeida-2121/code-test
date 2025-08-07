@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PostCard from "../components/PostCard";
 import DeleteAlert from "../components/DeleteAlert";
 import EditPostModal from "../components/EditPostModal";
 // import { useQuery } from "@tanstack/react-query";
 import "../style.css";
 
+// Failed try to fetch posts from an external API
 // const fetchPosts = async () => {
 //   const response = await fetch("https://dev.codeleap.co.uk/careers/");
 //   if (!response.ok) throw new Error("Failed to fetch posts");
@@ -16,19 +17,19 @@ import "../style.css";
 const Home = ({ username }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [posts, setPosts] = useState([]);
-  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [postToDelete, setPostToDelete] = useState(null);
-  const [isEditOpen, setIsEditOpen] = useState(false);
-  const [postToEdit, setPostToEdit] = useState(null);
+  const [posts, setPosts] = useState([]); // State to hold posts
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false); // State to control delete alert visibility
+  const [postToDelete, setPostToDelete] = useState(null); // State to hold the post to delete
+  const [isEditOpen, setIsEditOpen] = useState(false); // State to control edit modal visibility
+  const [postToEdit, setPostToEdit] = useState(null); // State to hold the post to edit
 
-  console.log("User logged in", username);
-
+  // Create a new post via local server and update the posts state
   const handleCreatePost = async () => {
     if (!title || !content) return;
 
     try {
       const response = await fetch("http://localhost:3001/posts", {
+        // Adjusted URL to match local server
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -41,19 +42,41 @@ const Home = ({ username }) => {
 
       const newPost = await response.json();
 
-      setPosts([newPost, ...posts]); // Adiciona o novo post retornado
-      setTitle("");
-      setContent("");
+      setPosts([newPost, ...posts]); // Add a new post at the beginning
+      setTitle(""); // Clear title input
+      setContent(""); // Clear content input
     } catch (err) {
-      console.error("Error create post:", err);
+      console.error("Error creating post:", err);
     }
   };
-  //
+
+  // Fetch posts from the local server when the component is mounted
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await fetch("http://localhost:3001/posts");
+        const data = await response.json();
+        // Sorting posts by most recent date
+        setPosts(
+          data.sort(
+            (a, b) =>
+              new Date(b.created_datetime) - new Date(a.created_datetime)
+          )
+        );
+      } catch (err) {
+        console.error("Error getting posts:", err);
+      }
+    };
+    fetchPosts();
+  }, []);
+
+  // Failed try to use React Query to fetch posts
   // const { data: posts = [], refetch } = useQuery({
   //   queryKey: ["posts"],
   //   queryFn: fetchPosts,
   // });
 
+  // Failed try to handle post creation
   // const handleCreatePost = async () => {
   //   if (!title || !content) return;
 
@@ -86,11 +109,13 @@ const Home = ({ username }) => {
   //   }
   // };
 
+  // Open delete alert modal for the selected post
   const openDeleteAlert = (post) => {
     setPostToDelete(post);
     setIsDeleteOpen(true);
   };
 
+  // Handle post delettion via local server and update the posts state
   const handleConfirmDelete = async () => {
     if (!postToDelete) return;
 
@@ -102,10 +127,11 @@ const Home = ({ username }) => {
       setPosts(posts.filter((p) => p.id !== postToDelete.id));
       setIsDeleteOpen(false);
     } catch (err) {
-      console.error("Erro delete post:", err);
+      console.error("Erro deleting post:", err);
     }
   };
 
+  // Failed try to handle post deletion
   // const handleConfirmDelete = async () => {
   //   if (!postToDelete) return;
   //   try {
@@ -120,16 +146,19 @@ const Home = ({ username }) => {
   //   }
   // };
 
+  // Open edit modal for the selected post
   const openEditModal = (post) => {
     setPostToEdit(post);
     setIsEditOpen(true);
   };
 
+  // Handle post editing via local server and update the posts state
   const handleSaveEdit = async (updatedPost) => {
     try {
       const response = await fetch(
         `http://localhost:3001/posts/${updatedPost.id}`,
         {
+          // Send PATCH request to update post
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -145,10 +174,11 @@ const Home = ({ username }) => {
         posts.map((post) => (post.id === patchedPost.id ? patchedPost : post))
       );
     } catch (err) {
-      console.error("Error save post:", err);
+      console.error("Error editing post:", err);
     }
   };
 
+  // Failed try to handle post editing
   // const handleSaveEdit = async (updatedPost) => {
   //   try {
   //     await fetch(`https://dev.codeleap.co.uk/careers/${updatedPost.id}/`, {
@@ -201,11 +231,15 @@ const Home = ({ username }) => {
           </button>
         </section>
 
+        {/* DeleteAlert component to confirm post deletion */}
+
         <DeleteAlert
           isOpen={isDeleteOpen}
           onClose={() => setIsDeleteOpen(false)}
           onConfirm={handleConfirmDelete}
         />
+
+        {/* EditPostModal component to edit a post */}
 
         <EditPostModal
           isOpen={isEditOpen}
@@ -214,6 +248,7 @@ const Home = ({ username }) => {
           onSave={handleSaveEdit}
         />
 
+        {/* PostCard component to display each post */}
         <section className="post-list">
           {posts.map((post) => (
             <PostCard

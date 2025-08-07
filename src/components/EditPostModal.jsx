@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import "../style.css";
 
 const EditPostModal = ({ isOpen, post, onClose, onSave }) => {
+  // Local state to hold the title and content of the post being edited
   const [title, setTitle] = useState(post?.title || "");
   const [content, setContent] = useState(post?.content || "");
 
+  // Update input fields when the post prop changes
   useEffect(() => {
     if (post) {
       setTitle(post.title);
@@ -12,8 +14,10 @@ const EditPostModal = ({ isOpen, post, onClose, onSave }) => {
     }
   }, [post]);
 
+  // It does not render anything if the modal is not open
   if (!isOpen) return null;
 
+  // Save the edited post and close the modal
   const handleSave = () => {
     if (!title || !content) return;
     onSave({ ...post, title, content });

@@ -1,10 +1,21 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import SignUp from "./components/SignUp";
 import Home from "./pages/Home";
 
 function App() {
+  // State to hold the username
   const [username, setUsername] = useState("");
+  // Retrieve username from localStorage on component mount (maintain login state after refresh)
+  const storedUsername = localStorage.getItem("username");
+
+  //Update username state if found in localStorage
+  useEffect(() => {
+    if (storedUsername) {
+      setUsername(storedUsername);
+    }
+  }, []);
+
   return (
     <BrowserRouter>
       <Routes>

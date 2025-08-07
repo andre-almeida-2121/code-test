@@ -3,15 +3,18 @@ import { useNavigate } from "react-router-dom";
 import "../style.css";
 
 const SignUp = ({ setUsername }) => {
+  // State to hold the input value for username
   const [inputValue, setInputValue] = useState("");
   const navigate = useNavigate();
 
+  // Handle form submission to set username and navigate to home page
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!inputValue.trim()) return;
 
-    setUsername(inputValue); // Username value will be stored
-    navigate("/home");
+    setUsername(inputValue); // Update username state in App component
+    localStorage.setItem("username", inputValue); // Persist username to maintain login state
+    navigate("/home"); // Navigate to home page
   };
 
   return (
